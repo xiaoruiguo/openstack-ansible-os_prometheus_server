@@ -1,0 +1,6 @@
+ - service:
+      haproxy_service_name: prometheus
+      haproxy_backend_nodes: "{{ groups['prometheus_all'] | default([]) }}"
+      haproxy_ssl: "{{ haproxy_ssl }}"
+      haproxy_port: 9090
+      haproxy_balance_type: http

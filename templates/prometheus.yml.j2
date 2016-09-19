@@ -1,0 +1,50 @@
+# my global config
+global:
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 15s # By default, scrape targets every 15 seconds.
+  # scrape_timeout is set to the global default (10s).
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  # external_labels: ''
+
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+{% if default_alert_rules %}
+rule_files:
+{{ prometheus_rule_files | to_nice_yaml }}
+{% endif %}
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+{% for hosts in groups['prometheus_all'] %}
+      - targets: ['{{ hosts }}:9090']
+        labels: {'host': '{{ hosts }}'}
+{% endfor %}
+  - job_name: 'node_exporter'
+    static_configs:
+{% for hosts in groups['all'] %}
+      - targets: ['{{ hosts }}:9100']
+        labels: {'host': '{{ hosts }}'}
+{% endfor %}
+  - job_name: 'haproxy_exporter'
+    static_configs:
+{% for hosts in groups['haproxy_all'] %}
+      - targets: ['{{ hosts }}:9101']
+        labels: {'host': '{{ hosts }}'}
+{% endfor %}
+  - job_name: 'mysqld_exporter'
+    static_configs:
+{% for hosts in groups['galera_all'] %}
+      - targets: ['{{ hosts }}:9104']
+        labels: {'host': '{{ hosts }}'}
+{% endfor %}

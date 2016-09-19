@@ -1,0 +1,49 @@
+---
+# Copyright 2016 Internet Solutions (Pty) Ltd
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# (c) 2016 Donovan Francesco <donovan.francesco@is.co.za>
+# (c) 2016 Paul Stevens <paul.stevens@is.co.za>
+
+debug: true
+prometheus_program_name: "prometheus"
+prometheus_full_version: "prometheus-1.1.2.linux-amd64"
+prometheus_bin: "/opt/{{ prometheus_full_version }}"
+prometheus_etc_directory: /etc/prometheus
+prometheus_version: "v1.1.2"
+prometheus_system_user_name: prometheus
+prometheus_system_group_name: prometheus
+prometheus_system_user_comment: "Prometheus User"
+prometheus_system_user_shell: "/bin/bash"
+prometheus_system_user_home: "/home/{{ prometheus_program_name }}"
+prometheus_log_directory: "/var/log/{{ prometheus_program_name }}"
+prometheus_program_options: "-config.file={{ prometheus_etc_directory }}/{{ program_name}}.yml -alertmanager.url http://{% for host in groups['prometheus_all'] %}{{ hostvars[host]['container_address'] }}{% if not loop.last %},{% endif %}{% endfor %}:{{ alertmanager_port }}"
+prometheus_data_directory: "/data"
+alertmanager_enabled: true
+alertmanager_port: 9093
+alertmanager_program_name: "alertmanager"
+alertmanager_service_name: "alertmanager"
+alertmanager_full_version: "alertmanager-0.4.2.linux-amd64"
+alertmanager_version: "v0.4.2"
+alertmanager_etc_directory: /etc/alertmanager
+alertmanager_system_user_name: "{{ alertmanager_program_name }}"
+alertmanager_system_group_name: "{{ alertmanager_program_name }}"
+alertmanager_system_user_comment: "Alert Manager User"
+alertmanager_system_user_shell: "/bin/false"
+alertmanager_system_user_home: "/home/{{ alertmanager_program_name }}"
+alertmanager_log_directory: "/var/log/{{ alertmanager_program_name }}"
+alertmanager_bin: "/opt/{{ alertmanager_full_version }}"
+alertmanager_program_options: "-config.file={{ alertmanager_etc_directory }}/{{ alertmanager_program_name }}.yml"
+alertmanager_smtp_smarthost: "localhost:25"
+alertmanager_smtp_from: "test@email.com"

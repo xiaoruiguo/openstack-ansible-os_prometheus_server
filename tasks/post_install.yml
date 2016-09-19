@@ -1,0 +1,110 @@
+---
+# Copyright 2016 Internet Solutions (Pty) Ltd
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# (c) 2016 Donovan Francesco <donovan.francesco@is.co.za>
+# (c) 2016 Paul Stevens <paul.stevens@is.co.za>
+- name: Distribute Prometheus Config Files
+  config_template:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+    owner: "{{ prometheus_system_user_name }}"
+    group: "{{ prometheus_system_group_name }}"
+    mode: "0644"
+    config_overrides: "{{ item.config_overrides }}"
+    config_type: "{{ item.config_type }}"
+  with_items:
+    - source: "prometheus.yml.j2"
+      destination: "{{ prometheus_etc_directory }}/prometheus.yml"
+      config_overrides: "{{ prometheus_config_overrides }}"
+      config_type: "ini"
+    - source: "prometheus_hosts.j2"
+      destination: "/etc/hosts"
+      config_overrides: "{{ prometheus_config_overrides }}"
+      config_type: "ini"
+
+- name: Create hyperlink to /usr/bin
+  file:
+    src: "/opt/{{ prometheus_full_version }}/prometheus"
+    dest: "/usr/bin/prometheus"
+    owner: "{{ prometheus_system_user_name }}"
+    group: "{{ prometheus_system_group_name }}"
+    state: link
+
+- name: Distribute Alert Manager Config Files
+  config_template:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+    owner: "{{ prometheus_system_user_name }}"
+    group: "{{ prometheus_system_group_name }}"
+    mode: "0644"
+    config_overrides: "{{ item.config_overrides }}"
+    config_type: "{{ item.config_type }}"
+  with_items:
+    - source: "alertmanager.yml.j2"
+      destination: "{{ alertmanager_etc_directory }}/alertmanager.yml"
+      config_overrides: "{{ alertmanager_config_overrides }}"
+      config_type: "ini"
+  when:
+    - alertmanager_enabled is defined
+
+- name: Create hyperlink to /usr/bin
+  file:
+    src: "/opt/{{ alertmanager_full_version }}/alertmanager"
+    dest: "/usr/bin/alertmanager"
+    owner: "{{ alertmanager_system_user_name }}"
+    group: "{{ alertmanager_system_group_name}}"
+    state: link
+  when:
+    - alertmanager_enabled is defined
+
+- name: Ensure data directory permissions are set
+  file:
+    dest: "{{ prometheus_data_directory }}"
+    owner: "{{ prometheus_system_user_name }}"
+    group: "{{ prometheus_system_group_name }}"
+    mode: 0770
+    state: directory
+    recurse: yes
+
+- name: Ensure alertmanager template directory exists
+  file:
+    dest: "{{ alertmanager_etc_directory }}/template"
+    owner: "{{ alertmanager_system_user_name }}"
+    group: "{{ alertmanager_system_group_name }}"
+    mode: 0770
+    state: directory
+    recurse: yes
+
+- name: copy prometheus alert rules
+  copy:
+    src: files/alert.rules
+    dest: "{{ prometheus_etc_directory }}/alert.rules"
+    owner: "{{ prometheus_system_user_name }}"
+    group: "{{ prometheus_system_group_name }}"
+    mode: 0640
+  notify:
+    - Restart prometheus services
+  when: default_alert_rules == true
+
+- name: copy alertmanager default template
+  copy:
+    src: files/default.tmpl
+    dest: "{{ alertmanager_etc_directory }}/template/default.tmpl"
+    owner: "{{ alertmanager_system_user_name }}"
+    group: "{{ alertmanager_system_group_name }}"
+    mode: 0640
+  notify:
+    - Restart prometheus services
+  when: default_alert_template == true
