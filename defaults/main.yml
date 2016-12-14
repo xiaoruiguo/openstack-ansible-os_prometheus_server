@@ -16,10 +16,10 @@
 # (c) 2016 Donovan Francesco <donovan.francesco@is.co.za>
 # (c) 2016 Paul Stevens <paul.stevens@is.co.za>
 prometheus_program_name: "prometheus"
-prometheus_full_version: "prometheus-1.1.2.linux-amd64"
+prometheus_full_version: "prometheus-1.4.1.linux-amd64"
 prometheus_bin: "/opt/{{ prometheus_full_version }}"
 prometheus_etc_directory: /etc/prometheus
-prometheus_version: "v1.1.2"
+prometheus_version: "v1.4.1"
 prometheus_system_user_name: prometheus
 prometheus_system_group_name: prometheus
 prometheus_system_user_comment: "Prometheus User"
@@ -36,8 +36,8 @@ alertmanager_enabled: true
 alertmanager_port: 9093
 alertmanager_program_name: "alertmanager"
 alertmanager_service_name: "alertmanager"
-alertmanager_full_version: "alertmanager-0.4.2.linux-amd64"
-alertmanager_version: "v0.4.2"
+alertmanager_full_version: "alertmanager-0.5.1.linux-amd64"
+alertmanager_version: "v0.5.1"
 alertmanager_etc_directory: /etc/alertmanager
 alertmanager_system_user_name: "{{ alertmanager_program_name }}"
 alertmanager_system_group_name: "{{ alertmanager_program_name }}"

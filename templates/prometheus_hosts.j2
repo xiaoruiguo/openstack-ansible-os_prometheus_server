@@ -1,5 +1,5 @@
 # {{ ansible_managed }}
 127.0.0.1   localhost
 {% for host in groups['all'] %}
-{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }} {{ host }}
+{{ hostvars[host]['container_address'] }} {{ host }}
 {% endfor %}
