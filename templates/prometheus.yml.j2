@@ -38,7 +38,7 @@ scrape_configs:
 {% endfor %}
   - job_name: 'haproxy_exporter'
     static_configs:
-{% for hosts in groups['haproxy_container'] %}
+{% for hosts in groups['haproxy_all'] %}
       - targets: ['{{ hosts }}:9101']
         labels: {'host': '{{ hosts }}'}
 {% endfor %}

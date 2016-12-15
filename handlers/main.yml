@@ -24,3 +24,19 @@
   with_items:
     - "{{ prometheus_program_name }}"
     - "{{ alertmanager_program_name }}"
+
+- name: Start prometheus services
+  service:
+    name: "{{ item }}"
+    state: started
+  with_items:
+    - "{{ prometheus_program_name }}"
+    - "{{ alertmanager_program_name }}"
+
+- name: Enable prometheus services
+  service:
+    name: "{{ item }}"
+    state: enabled
+  with_items:
+    - "{{ prometheus_program_name }}"
+    - "{{ alertmanager_program_name }}"
