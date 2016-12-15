@@ -28,7 +28,7 @@ prometheus_system_user_comment: "Prometheus User"
 prometheus_system_user_shell: "/bin/bash"
 prometheus_system_user_home: "/home/{{ prometheus_program_name }}"
 prometheus_log_directory: "/var/log/{{ prometheus_program_name }}"
-prometheus_program_options: "-config.file={{ prometheus_etc_directory }}/{{ program_name}}.yml -alertmanager.url http://{% for host in {{ alertmanager_servers | join(',') }} %}:{{ alertmanager_port }}{% endfor %}"
+prometheus_program_options: "-config.file={{ prometheus_etc_directory }}/{{ program_name}}.yml -alertmanager.url http://{{ alertmanager_servers | join(',') }}:{{ alertmanager_port }}"
 prometheus_data_directory: "/data"
 prometheus_rule_files:
 - '/etc/prometheus/alert.rules'
