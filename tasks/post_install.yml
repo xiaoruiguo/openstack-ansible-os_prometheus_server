@@ -33,6 +33,7 @@
       destination: "/etc/hosts"
       config_overrides: "{{ prometheus_config_overrides }}"
       config_type: "ini"
+  notify: Restart prometheus services
 
 - name: Create hyperlink to /usr/bin
   file:
@@ -58,6 +59,7 @@
       config_type: "ini"
   when:
     - alertmanager_enabled is defined
+  notify: Restart prometheus services
 
 - name: Create hyperlink to /usr/bin
   file:
@@ -108,3 +110,19 @@
   notify:
     - Restart prometheus services
   when: default_alert_template == true
+
+- name: Start prometheus services
+  service:
+    name: "{{ item }}"
+    state: started
+  with_items:
+    - "{{ prometheus_program_name }}"
+    - "{{ alertmanager_program_name }}"
+
+- name: Enable prometheus services
+  service:
+    name: "{{ item }}"
+    state: enabled
+  with_items:
+    - "{{ prometheus_program_name }}"
+    - "{{ alertmanager_program_name }}"
