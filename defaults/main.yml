@@ -28,7 +28,7 @@ prometheus_system_user_comment: "Prometheus User"
 prometheus_system_user_shell: "/bin/bash"
 prometheus_system_user_home: "/home/{{ prometheus_program_name }}"
 prometheus_log_directory: "/var/log/{{ prometheus_program_name }}"
-prometheus_program_options: "-config.file={{ prometheus_etc_directory }}/{{ program_name}}.yml -alertmanager.url http://{{ alertmanager_servers.split(',') }}:{{ alertmanager_port }}"
+prometheus_program_options: "-config.file={{ prometheus_etc_directory }}/{{ program_name}}.yml -alertmanager.url {{ alertmanager_servers }}"
 prometheus_data_directory: "/data"
 prometheus_rule_files:
 - '/etc/prometheus/alert.rules'
@@ -39,7 +39,7 @@ alertmanager_port: 9093
 alertmanager_program_name: "alertmanager"
 alertmanager_service_name: "alertmanager"
 alertmanager_full_version: "alertmanager-0.5.1.linux-amd64"
-alertmanager_servers: "{% for host in groups[prometheus_host_group] %}{{ hostvars[host]['ansible_ssh_host'] }}{% if not loop.last %},{% endif %}{% endfor %}"
+alertmanager_servers: "{% for host in groups[prometheus_host_group] %}http://{{ hostvars[host]['ansible_ssh_host'] }}:{{ alertmanager_port }}{% if not loop.last %},{% endif %}{% endfor %}"
 alertmanager_version: "v0.5.1"
 alertmanager_etc_directory: /etc/alertmanager
 alertmanager_system_user_name: "{{ alertmanager_program_name }}"
