@@ -8,12 +8,12 @@ ALERT InstanceDown
   }
 
 ALERT NodeLowMem
-  IF (node_memory_MemFree + node_memory_Buffers + node_memory_Cached) / node_memory_MemTotal* 100 < 40
+  IF (node_memory_MemFree + node_memory_Buffers + node_memory_Cached) / node_memory_MemTotal* 100 < 10
   FOR 2m
-  LABELS { severity = "warning" }
+  LABELS { severity = "critical" }
   ANNOTATIONS {
     summary = "Instance {{$labels.host}} has high memory consumption",
-    description = "{{$labels.host}} of job {{$labels.job}} has less than 40% of memory available for more than 1 minutes.",
+    description = "{{$labels.host}} of job {{$labels.job}} has less than 10% of memory available for more than 1 minutes.",
   }
 
 ALERT HighLoad
