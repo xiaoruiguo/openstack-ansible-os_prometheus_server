@@ -40,10 +40,9 @@ scrape_configs:
     static_configs:
 {% for hosts in groups['haproxy_all'] %}
       - targets: ['{{ hosts }}:9101']
-        labels: {'host': '{{ hosts }}'}
-        alias: {'loadbalancer'}
+        labels: {'host': '{{ hosts }}', 'alias': 'loadbalancer'}
 {% endfor %}
-  - job_name: 'mysqld'
+  - job_name: 'mysql'
     static_configs:
 {% for hosts in groups['galera_all'] %}
       - targets: ['{{ hosts }}:9104']
