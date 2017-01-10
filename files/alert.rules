@@ -35,7 +35,7 @@ ALERT LowDiskSpace
   }
 
 ALERT InstanceHighCpu
-  IF 100 - (avg by (host) (irate(node_cpu{mode="idle"}[5m])) * 100) > 5
+  IF 100 - (avg by (host) (irate(node_cpu{mode="idle"}[5m])) * 100) > 20
   FOR 10m
   LABELS { severity = "warning" }
   ANNOTATIONS {
