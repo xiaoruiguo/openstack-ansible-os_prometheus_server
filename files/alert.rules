@@ -40,7 +40,7 @@ ALERT InstanceHighCpu
   LABELS { severity = "warning" }
   ANNOTATIONS {
     summary = "Instance {{$labels.host}}: cpu high",
-    description = "{{$labels.host}} has high cpu activity" 
+    description = "{{$labels.host}} has high cpu activity"
   }
 
 ALERT DiskWillFillIn4Hours
