@@ -28,23 +28,19 @@ scrape_configs:
     static_configs:
 {% for hosts in groups['prometheus_all'] %}
       - targets: ['{{ hosts }}:9090']
-        labels: {'host': '{{ hosts }}'}
 {% endfor %}
   - job_name: 'node'
     static_configs:
 {% for hosts in groups['all'] %}
       - targets: ['{{ hosts }}:9100']
-        labels: {'host': '{{ hosts }}'}
 {% endfor %}
   - job_name: 'haproxy'
     static_configs:
 {% for hosts in groups['haproxy_all'] %}
       - targets: ['{{ hosts }}:9101']
-        labels: {'host': '{{ hosts }}', 'alias': 'loadbalancer'}
 {% endfor %}
   - job_name: 'mysql'
     static_configs:
 {% for hosts in groups['galera_all'] %}
       - targets: ['{{ hosts }}:9104']
-        labels: {'host': '{{ hosts }}'}
 {% endfor %}
