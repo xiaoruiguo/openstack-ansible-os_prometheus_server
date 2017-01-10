@@ -26,7 +26,7 @@ ALERT HighLoad
   }
 
 ALERT LowDiskSpace
-  IF node_filesystem_avail{job='node_exporter',mountpoint='/'} / node_filesystem_size{job='node_exporter'} * 100 < 30
+  IF node_filesystem_avail{job='node',mountpoint='/'} / node_filesystem_size{job='node'} * 100 < 30
   FOR 2m
   LABELS { severity = "warning" }
   ANNOTATIONS {
@@ -44,7 +44,7 @@ ALERT InstanceHighCpu
   }
 
 ALERT DiskWillFillIn4Hours
-  IF predict_linear(node_filesystem_free{job='node_exporter'}[1h], 4*3600) < 0
+  IF predict_linear(node_filesystem_free{job='node'}[1h], 4*3600) < 0
   FOR 5m
   LABELS {
     severity="warning"

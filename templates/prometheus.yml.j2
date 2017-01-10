@@ -30,19 +30,19 @@ scrape_configs:
       - targets: ['{{ hosts }}:9090']
         labels: {'host': '{{ hosts }}'}
 {% endfor %}
-  - job_name: 'node_exporter'
+  - job_name: 'node'
     static_configs:
 {% for hosts in groups['all'] %}
       - targets: ['{{ hosts }}:9100']
         labels: {'host': '{{ hosts }}'}
 {% endfor %}
-  - job_name: 'haproxy_exporter'
+  - job_name: 'haproxy'
     static_configs:
 {% for hosts in groups['haproxy_all'] %}
       - targets: ['{{ hosts }}:9101']
         labels: {'host': '{{ hosts }}'}
 {% endfor %}
-  - job_name: 'mysqld_exporter'
+  - job_name: 'mysqld'
     static_configs:
 {% for hosts in groups['galera_all'] %}
       - targets: ['{{ hosts }}:9104']
