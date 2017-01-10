@@ -26,10 +26,26 @@ ALERT HighLoad
   }
 
 ALERT LowDiskSpace
-  IF node_filesystem_free{job="node_exporter"} / node_filesystem_size{job="node_exporter"} * 100 < 30
+  IF node_filesystem_avail{job='node_exporter',mountpoint='/'} / node_filesystem_size{job='node_exporter'} * 100 < 30
   FOR 2m
   LABELS { severity = "warning" }
   ANNOTATIONS {
-    summary = "disk space on {{$labels.host}} {{$labels.instance}} lower than 20%",
-    description = "disk space on {{$labels.host}} {{$labels.instance}} lower than 20%",
+    summary = "disk space on {{$labels.host}} {{$labels.instance}} lower than 30%",
+    description = "disk space on {{$labels.host}} {{$labels.instance}} lower than 30%",
+  }
+
+ALERT InstanceHighCpu
+  IF 100 - (avg by (host) (irate(node_cpu{mode="idle"}[5m])) * 100) > 5
+  FOR 10m
+  LABELS { severity = "warning" }
+  ANNOTATIONS {
+    summary = "Instance {{$labels.host}}: cpu high",
+    description = "{{$labels.host}} has high cpu activity" 
+  }
+
+ALERT DiskWillFillIn4Hours
+  IF predict_linear(node_filesystem_free{job='node_exporter'}[1h], 4*3600) < 0
+  FOR 5m
+  LABELS {
+    severity="warning"
   }
