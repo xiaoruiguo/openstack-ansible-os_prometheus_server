@@ -1,10 +1,10 @@
-ALERT InstanceDown
-  IF up == 0
-  FOR 2m
+ALERT InstancesDown
+  IF avg by(job)(up{job="node"}) < .75
+  FOR 10m
   LABELS { severity = "critical" }
   ANNOTATIONS {
-    summary = "Instance {{ $labels.instance }} down",
-    description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.",
+    summary = "Instances {{ $labels.instance }} down",
+    description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 10 minutes.",
   }
 
 ALERT NodeLowMem
@@ -46,6 +46,8 @@ ALERT InstanceHighCpu
 ALERT DiskWillFillIn4Hours
   IF predict_linear(node_filesystem_free{job='node'}[1h], 4*3600) < 0
   FOR 5m
-  LABELS {
-    severity="warning"
+  LABELS { severity="warning" }
+  ANNOTATIONS {
+    summary = "disk space on {{$labels.host}} {{$labels.instance}} will fill in 4 hours",
+    description = "disk space on {{$labels.host}} {{$labels.instance}} will fill in 4 hours",
   }
